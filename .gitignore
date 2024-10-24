@@ -132,3 +132,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+test.py
+/.idea
+autodistill_florence_2/__init__.py
+autodistill_florence_2/model.py
