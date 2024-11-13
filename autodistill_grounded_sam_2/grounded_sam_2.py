@@ -71,12 +71,12 @@ class GroundedSAM2(DetectionBaseModel):
         end_time = time.time()
         print(f'--> Time for Florence2: {end_time - start_time} secs')
 
+        start_time = time.time()
         with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
             self.sam_2_predictor.set_image(image)
             result_masks = []
             boxes = [b for b in detections.xyxy]
 
-            start_time = time.time()
             for box in detections.xyxy:
                 masks, scores, _ = self.sam_2_predictor.predict(
                     box=box, multimask_output=False
@@ -84,8 +84,8 @@ class GroundedSAM2(DetectionBaseModel):
                 index = np.argmax(scores)
                 masks = masks.astype(bool)
                 result_masks.append(masks[index])
-            end_time = time.time()
-            print(f'--> Time for sequntial: {end_time-start_time} secs')
+        end_time = time.time()
+        print(f'--> Time for sequntial: {end_time-start_time} secs')
 
             # start_time = time.time()
             # masks, scores, _ = self.sam_2_predictor.predict(
