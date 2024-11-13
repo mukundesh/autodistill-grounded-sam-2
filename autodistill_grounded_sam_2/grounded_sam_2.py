@@ -87,14 +87,14 @@ class GroundedSAM2(DetectionBaseModel):
             end_time = time.time()
             print(f'--> Time for sequntial: {end_time-start_time} secs')
 
-            start_time = time.time()
-            masks, scores, _ = self.sam_2_predictor.predict(
-                        box=boxes, multimask_output=False
-                    )
-            masks = masks.astype(bool)
-            end_time = time.time()
-            print(f'--> Time for batch: {end_time - start_time} secs')
+            # start_time = time.time()
+            # masks, scores, _ = self.sam_2_predictor.predict(
+            #             box=boxes, multimask_output=False
+            #         )
+            # masks = masks.astype(bool)
+            # end_time = time.time()
+            # print(f'--> Time for batch: {end_time - start_time} secs')
 
-        detections.mask = np.array(masks)
+        detections.mask = np.array(result_masks)
 
         return detections
