@@ -1,4 +1,5 @@
 import os
+import time
 from dataclasses import dataclass
 
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
@@ -43,10 +44,12 @@ class GroundedSAM2(DetectionBaseModel):
         self.grounding_dino_text_threshold = grounding_dino_text_threshold
 
     def predict(self, input: Any) -> sv.Detections:
+        start_time = time.time()
         image = load_image(input, return_format="cv2")
 
         if self.model == "Florence 2":
-            detections = self.florence_2_predictor.predict(image)
+            with torch.inference_mode():
+                detections = self.florence_2_predictor.predict(image)
         elif self.model == "Grounding DINO":
             # GroundingDINO predictions
             detections_list = []
@@ -65,10 +68,15 @@ class GroundedSAM2(DetectionBaseModel):
             detections = combine_detections(
                 detections_list, overwrite_class_ids=range(len(detections_list))
             )
+        end_time = time.time()
+        print(f'--> Time for Florence2: {end_time - start_time} secs')
 
         with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
             self.sam_2_predictor.set_image(image)
             result_masks = []
+            boxes = [b for b in detections.xyxy]
+
+            start_time = time.time()
             for box in detections.xyxy:
                 masks, scores, _ = self.sam_2_predictor.predict(
                     box=box, multimask_output=False
@@ -76,7 +84,17 @@ class GroundedSAM2(DetectionBaseModel):
                 index = np.argmax(scores)
                 masks = masks.astype(bool)
                 result_masks.append(masks[index])
+            end_time = time.time()
+            print(f'--> Time for sequntial: {end_time-start_time} secs')
 
-        detections.mask = np.array(result_masks)
+            start_time = time.time()
+            masks, scores, _ = self.sam_2_predictor.predict(
+                        box=boxes, multimask_output=False
+                    )
+            masks = masks.astype(bool)
+            end_time = time.time()
+            print(f'--> Time for batch: {end_time - start_time} secs')
+
+        detections.mask = np.array(masks)
 
         return detections
