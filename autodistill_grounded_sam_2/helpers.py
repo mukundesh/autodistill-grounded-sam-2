@@ -90,7 +90,8 @@ def load_SAM():
 
     from sam2.build_sam import build_sam2
     from sam2.sam2_image_predictor import SAM2ImagePredictor
-    from hydra import initialize, compose
+    #from hydra import initialize, compose
+    from omegaconf import OmegaConf
 
     checkpoint = "model/sam2/sam2_hiera_base_plus.pth"
     model_cfg_path = "model/sam2/sam2_hiera_b+.yaml"    
