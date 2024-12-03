@@ -90,12 +90,25 @@ def load_SAM():
 
     from sam2.build_sam import build_sam2
     from sam2.sam2_image_predictor import SAM2ImagePredictor
+    from hydra import initialize, compose
 
     checkpoint = "model/sam2/sam2_hiera_base_plus.pth"
     checkpoint = os.path.expanduser(checkpoint)
-    model_cfg = "model/sam2/sam2_hiera_b+.yaml"
-    predictor = SAM2ImagePredictor(build_sam2(model_cfg, checkpoint))
+    # model_cfg = "model/sam2/sam2_hiera_b+.yaml"
+    
+    config_dir="model/sam2"
+    model_cfg = "sam2_hiera_l.yaml"
 
+    with initialize(config_path=config_dir):
+        cfg = compose(config_name=model_cfg)
+        sam2_model = build_sam2(cfg, checkpoint)
+
+
+
+
+    
+    #predictor = SAM2ImagePredictor(build_sam2(model_cfg, checkpoint))
+    predictor = SAM2ImagePredictor(sam2_model)
     return predictor
 
 
