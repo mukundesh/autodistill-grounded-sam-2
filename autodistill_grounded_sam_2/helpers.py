@@ -94,8 +94,9 @@ def load_SAM():
     from omegaconf import OmegaConf
 
     checkpoint = "model/sam2/sam2_hiera_base_plus.pth"
-    model_cfg_path = "model/sam2/sam2_hiera_b+.yaml"    
-    cfg = OmegaConf.load(model_cfg_path)
+    model_cfg_path = "model/sam2/sam2_hiera_b+.yaml"
+
+    cfg = "sam2_hiera_b+.yaml"
     sam2_model = build_sam2(cfg, checkpoint)
 
     
