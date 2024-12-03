@@ -2,7 +2,6 @@ import os
 import subprocess
 import sys
 import urllib.request
-from groundingdino.util.inference import Model
 
 import torch
 import numpy as np
