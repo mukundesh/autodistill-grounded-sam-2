@@ -1,3 +1,3 @@
 from autodistill_grounded_sam_2.grounded_sam_2 import GroundedSAM2
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"

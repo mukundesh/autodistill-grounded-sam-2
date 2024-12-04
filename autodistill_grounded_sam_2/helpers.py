@@ -96,7 +96,7 @@ def load_SAM():
     checkpoint = "model/sam2/sam2_hiera_base_plus.pth"
     model_cfg_path = "model/sam2/sam2_hiera_b+.yaml"
 
-    device = "cuda" torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 
     cfg = "sam2_hiera_b+.yaml"
     sam2_model = build_sam2(cfg, checkpoint, device=device)
